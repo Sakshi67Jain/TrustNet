@@ -1,208 +1,242 @@
 # TrustNet
 
 TrustNet is a mobile-based personal safety application developed using React, TypeScript, Firebase Authentication, and Cloud Firestore. The application enables users to create trusted contact networks, share live locations, and trigger SOS alerts during emergencies.
-Features
- Secure Phone Number Authentication
+## Features
 
-TrustNet uses Firebase Authentication with OTP-based phone verification, eliminating the need for passwords while ensuring that every registered user is verified before accessing the platform.
+### Secure User Authentication
 
-Implemented Features
-Phone number registration and login
-OTP verification using Firebase Authentication
-Invisible Google reCAPTCHA integration
-Secure session management
-Automatic user profile creation in Firestore
-Logout functionality
-Persistent authentication state
-Benefits
-Password-free authentication
-Reduced risk of credential theft
-Faster onboarding process
-Trusted and verified users
-👥 Trust Relationship Management
+TrustNet implements a secure authentication system using Firebase Authentication with OTP-based phone verification. This passwordless approach ensures that every user is verified before accessing the platform while providing a seamless login experience.
 
-One of the core functionalities of TrustNet is its Trust Network, allowing users to create a reliable circle of trusted contacts.
+**Key Features**
+- Phone number registration and login
+- One-Time Password (OTP) verification
+- Firebase Authentication integration
+- Invisible Google reCAPTCHA verification
+- Persistent user sessions
+- Automatic user profile creation in Firestore
+- Secure logout functionality
 
-Implemented Features
-Search users using their registered phone number
-Send trust requests
-Accept incoming trust requests
-Reject trust requests
-Retrieve accepted trusted contacts
-Maintain trust relationship status
-Prevent duplicate trust requests
-Prevent self-requests
-Firestore Collection
-trust_relationships
+---
 
-Stores
+### Trust Network Management
 
-User A
-User B
-Request Status
-Timestamp
-Benefits
+The core functionality of TrustNet revolves around creating a trusted network of contacts who can assist users during emergencies. The application enables users to build and manage trusted relationships securely.
 
-Instead of relying only on emergency contacts saved in the phone, TrustNet creates a dynamic and secure trust network where relationships are verified within the application.
+**Key Features**
+- Search users using registered phone numbers
+- Send trust requests
+- Accept or reject incoming trust requests
+- View trusted contacts
+- Prevent duplicate trust requests
+- Prevent self-request generation
+- Maintain trust relationship status in real time
 
-📍 Real-Time Location Sharing
+---
 
-TrustNet supports secure location sharing among trusted contacts during emergencies.
+### Real-Time Location Sharing
 
-Implemented Features
-Update user's current location
-Store geographical coordinates using Firestore GeoPoint
-Enable or disable location sharing
-Retrieve trusted users' live locations
-Timestamp every location update
-Firestore Collection
-user_locations
+TrustNet enables users to securely share their live location with trusted contacts during emergencies. User locations are stored using Firestore GeoPoints, allowing accurate geographical tracking.
 
-Stores
+**Key Features**
+- Update current user location
+- Enable or disable location sharing
+- Store location using Firestore GeoPoints
+- Retrieve trusted contacts' locations
+- Timestamp every location update
+- Real-time location synchronization
 
-User ID
-GeoPoint
-Timestamp
-Sharing Status
-Benefits
-Real-time emergency tracking
-Location history support
-Efficient emergency response
- Multi-Layer SOS System
+---
 
-TrustNet provides a structured emergency alert mechanism instead of sending alerts to everyone simultaneously.
+### SOS Emergency System
 
-Implemented Features
-Trigger SOS session
-Create unique SOS records
-Maintain SOS status
-Escalation layer tracking
-SOS cancellation
-SOS resolution
-Real-time SOS monitoring using Firestore listeners
-Track acknowledgement status
-SOS States
-Active
-Cancelled
-Resolved
-Firestore Collection
-sos_sessions
+The application provides a structured SOS mechanism that allows users to instantly trigger emergency alerts. Each SOS event is managed through dedicated Firestore sessions to ensure reliable communication with trusted contacts.
 
-Stores
+**Key Features**
+- Create SOS sessions
+- Trigger emergency alerts
+- Track SOS session status
+- Cancel active SOS sessions
+- Resolve completed SOS sessions
+- Maintain alert history
+- Real-time SOS updates using Firestore listeners
 
-Session ID
-Triggered By
-Active Layer
-Status
-Start Time
-End Time
-Alerted Contacts
-Acknowledged Contact
-Benefits
-Structured emergency response
-Reduced notification spam
-Layer-wise escalation
-Real-time synchronization
-🔔 Notification System
+---
 
-TrustNet includes a notification module to inform users about important events.
+### Notification Management
 
-Implemented Features
-Send notifications
-Store notifications in Firestore
-Retrieve notifications
-Mark notifications as read
-Timestamp every notification
-Supported Notifications
-Trust Requests
-Trust Accepted
-SOS Alerts
-System Notifications
-Firestore Collection
-notifications
+TrustNet includes a notification system to keep users informed about trust requests, emergency alerts, and important application events.
 
-Stores
+**Key Features**
+- Generate notifications
+- Retrieve user notifications
+- Mark notifications as read
+- Store notification history
+- Timestamp every notification
 
-Sender
-Receiver
-Title
-Message
-Notification Type
-Read Status
-Timestamp
-☁ Firebase Cloud Integration
+**Supported Notification Types**
+- Trust Requests
+- Trust Request Accepted
+- SOS Alerts
+- General Notifications
 
-The project is completely integrated with Firebase services.
+---
 
-Firebase Services Used
-Firebase Authentication
-Cloud Firestore
-Firebase SDK
-Server Timestamp
-Firestore GeoPoint
-Advantages
-Fully managed backend
-Real-time synchronization
-Scalable architecture
-Secure authentication
-Cloud-hosted database
-🧩 Modular Service-Based Architecture
+### Firebase Cloud Integration
 
-The project follows a clean separation of concerns by organizing business logic into dedicated service modules.
+The project is fully integrated with Firebase services, providing a scalable cloud-based backend for authentication and data storage.
 
-Implemented Service Modules
-Authentication Service
+**Firebase Services Used**
+- Firebase Authentication
+- Cloud Firestore
+- Firebase SDK
+- Firestore GeoPoint
+- Server Timestamp
 
-Location Service
+---
 
-SOS Service
+### Modular Service-Based Architecture
 
-Trust Service
+The application follows a modular architecture where each major functionality is implemented as an independent service. This improves maintainability, scalability, and code reusability.
 
-Notification Service
+**Implemented Services**
+- Authentication Service
+- Trust Service
+- SOS Service
+- Location Service
+- Notification Service
 
-Each module handles a single responsibility, making the application easier to maintain, extend, and test.
+---
 
-📂 Strong Type Safety
+### Type-Safe Development
 
-The project is written using TypeScript, providing strict typing across the application.
+The entire application is developed using TypeScript, ensuring better code quality, improved maintainability, and enhanced developer experience.
 
-Implemented Models
-User
+**Implemented Models**
+- User
+- Trust Relationship
+- SOS Session
+- User Location
 
-TrustRelationship
+---
 
-SOSSession
+### Input Validation
 
-UserLocation
+The application validates user inputs before interacting with Firebase services, ensuring data consistency and minimizing invalid requests.
 
-Benefits include:
+**Validation Features**
+- Phone number validation
+- Utility helper functions
+- Centralized application constants
+- SOS status validation
+- Trust request status validation
 
-Better IDE support
-Early error detection
-Improved maintainability
-Cleaner codebase
-✅ Input Validation
+---
 
-Utility functions are implemented to validate user inputs before interacting with Firebase.
+## Technology Stack
 
-Current Validations
-Phone number validation
-Helper utility functions
-Application constants
-SOS status constants
-Trust request status constants
-🛠 Technology Stack
-Category	Technologies Used
-Frontend	React.js
-Language	TypeScript
-Build Tool	Vite
-Styling	CSS3
-Authentication	Firebase Authentication
-Database	Cloud Firestore
-Backend Services	Firebase SDK
-Location Storage	Firestore GeoPoint
-State Management	React Hooks
-Version Control	Git
-Package Manager	npm
-Linting	ESLint
+| Category | Technologies |
+|----------|--------------|
+| Frontend | React.js |
+| Language | TypeScript |
+| Build Tool | Vite |
+| Styling | CSS3 |
+| Authentication | Firebase Authentication |
+| Database | Cloud Firestore |
+| Backend Services | Firebase SDK |
+| Location Services | Firestore GeoPoint |
+| State Management | React Hooks |
+| Package Manager | npm |
+| Linting | ESLint |
+| Version Control | Git |
+
+---
+
+## Project Architecture
+
+The application follows a layered architecture that separates presentation, business logic, and data access, resulting in a clean, scalable, and maintainable codebase.
+
+```
+Presentation Layer
+│
+├── React Components
+│
+Business Logic Layer
+│
+├── Authentication Service
+├── Trust Service
+├── SOS Service
+├── Notification Service
+└── Location Service
+│
+Data Layer
+│
+├── Firebase Authentication
+└── Cloud Firestore
+```
+
+---
+
+## Project Structure
+
+```
+src/
+│
+├── assets/
+│
+├── firebase/
+│   └── firebase.ts
+│
+├── services/
+│   ├── authService.ts
+│   ├── trustService.ts
+│   ├── sosService.ts
+│   ├── notificationService.ts
+│   └── locationService.ts
+│
+├── types/
+│   ├── user.ts
+│   ├── trust.ts
+│   ├── sos.ts
+│   └── location.ts
+│
+├── utils/
+│   ├── constants.ts
+│   ├── helpers.ts
+│   └── validators.ts
+│
+├── App.tsx
+├── main.tsx
+└── testBackend.ts
+```
+
+---
+
+## Security Features
+
+- OTP-based phone authentication
+- Firebase Authentication integration
+- Passwordless login mechanism
+- Verified user accounts
+- Firestore server timestamps
+- Secure trust relationship validation
+- Prevention of duplicate trust requests
+- Persistent authenticated sessions
+- Input validation before database operations
+
+---
+
+## Scalability
+
+The modular architecture allows the application to be easily extended with additional features such as:
+
+- Push notifications
+- AI-powered emergency detection
+- Voice-activated SOS
+- Live map integration
+- Emergency service integration
+- End-to-end encrypted messaging
+- Wearable device support
+- Offline emergency mode
+- Analytics dashboard
+- Multi-language support
+- Administrative dashboard
