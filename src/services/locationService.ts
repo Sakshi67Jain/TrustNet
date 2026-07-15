@@ -20,6 +20,7 @@ import { db } from "../firebase/firebase";
  * geopoint
  * timestamp
  * sharingEnabled
+ * available
  */
 
 // ===============================
@@ -33,18 +34,20 @@ export async function updateMyLocation(
 ) {
   try {
     await setDoc(
-      doc(db, "user_locations", uid),
-      {
-        uid: uid,
+  doc(db, "user_locations", uid),
+  {
+    uid: uid,
 
-        geopoint: new GeoPoint(lat, lng),
+    geopoint: new GeoPoint(lat, lng),
 
-        timestamp: serverTimestamp(),
+    timestamp: serverTimestamp(),
 
-        sharingEnabled: true,
-      },
-      { merge: true }
-    );
+    sharingEnabled: true,
+
+    available: true,
+  },
+  { merge: true }
+);
   } catch (err) {
     console.error(err);
     throw err;
@@ -61,6 +64,7 @@ export async function stopSharing(uid: string) {
       doc(db, "user_locations", uid),
       {
         sharingEnabled: false,
+        available: false,
         timestamp: serverTimestamp(),
       },
       { merge: true }

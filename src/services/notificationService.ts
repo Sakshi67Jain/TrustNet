@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "../firebase/firebase";
-
+import { getMutualConnection } from "./trustService";
 /*
 notifications
 
@@ -144,4 +144,75 @@ export async function getNotifications(
     id: d.id,
     ...(d.data() as any),
   }));
+}
+
+// =======================================
+// Notify Layer 2 Candidates
+// =======================================
+
+export async function notifyLayer2(
+  sessionId: string,
+  candidateUIDs: string[],
+  distressedUID: string
+) {
+  try {
+
+    for (const uid of candidateUIDs) {
+
+      const mutual = await getMutualConnection(
+        distressedUID,
+        uid
+      );
+
+      const message = mutual
+        ? `${mutual.displayName}'s trusted friend needs emergency assistance nearby.`
+        : "A nearby user needs emergency assistance.";
+
+      await sendNotification(
+        uid,
+        distressedUID,
+        "Layer 2 SOS Alert",
+        message,
+        "LAYER2_SOS"
+      );
+    }
+
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+// =======================================
+// Notify Next Layer 2 Candidate
+// =======================================
+
+export async function notifyNextCandidate(
+  sessionId: string,
+  nextCandidateUID: string,
+  distressedUID: string
+) {
+  try {
+
+    const mutual = await getMutualConnection(
+      distressedUID,
+      nextCandidateUID
+    );
+
+    const message = mutual
+      ? `${mutual.displayName}'s trusted friend still needs emergency help.`
+      : "Emergency assistance is still required nearby.";
+
+    await sendNotification(
+      nextCandidateUID,
+      distressedUID,
+      "Layer 2 SOS Retry",
+      message,
+      "LAYER2_RETRY"
+    );
+
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 }
