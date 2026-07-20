@@ -1,242 +1,317 @@
-# TrustNet
+# TrustNet Backend
 
-TrustNet is a mobile-based personal safety application developed using React, TypeScript, Firebase Authentication, and Cloud Firestore. The application enables users to create trusted contact networks, share live locations, and trigger SOS alerts during emergencies.
-## Features
+## Overview
 
-### Secure User Authentication
+TrustNet is a personal safety platform designed to provide real-time emergency assistance through a trusted network of contacts, verified guardian volunteers, and community safe spaces. This repository contains the backend implementation responsible for managing authentication, trust relationships, SOS sessions, live location updates, notifications, user management, guardian ratings, and safe space services using Firebase.
 
-TrustNet implements a secure authentication system using Firebase Authentication with OTP-based phone verification. This passwordless approach ensures that every user is verified before accessing the platform while providing a seamless login experience.
+The backend is built using **TypeScript** and **Firebase Firestore**, with a service-oriented architecture that separates business logic into reusable modules.
 
-**Key Features**
-- Phone number registration and login
-- One-Time Password (OTP) verification
+---
+
+# Features
+
+## Authentication
+
 - Firebase Authentication integration
-- Invisible Google reCAPTCHA verification
-- Persistent user sessions
-- Automatic user profile creation in Firestore
-- Secure logout functionality
+- User registration and login support
+- User profile creation after successful authentication
+- Session management
+- Current user retrieval
+- Logout functionality
 
 ---
 
-### Trust Network Management
+## Trust Circle Management
 
-The core functionality of TrustNet revolves around creating a trusted network of contacts who can assist users during emergencies. The application enables users to build and manage trusted relationships securely.
+The Trust Circle module manages trusted relationships between users.
 
-**Key Features**
-- Search users using registered phone numbers
+Implemented functionalities include:
+
+- Search registered users by phone number
 - Send trust requests
-- Accept or reject incoming trust requests
-- View trusted contacts
-- Prevent duplicate trust requests
-- Prevent self-request generation
-- Maintain trust relationship status in real time
+- Accept trust requests
+- Reject trust requests
+- Retrieve Layer-1 trusted contacts
+- Fetch pending trust requests
+- Remove trust relationships
+- Retrieve user information
+
+All trust relationships are stored in the Firestore collection:
+
+```
+trust_relationships
+```
 
 ---
 
-### Real-Time Location Sharing
+## SOS Management
 
-TrustNet enables users to securely share their live location with trusted contacts during emergencies. User locations are stored using Firestore GeoPoints, allowing accurate geographical tracking.
+The SOS module handles the complete emergency workflow.
 
-**Key Features**
-- Update current user location
-- Enable or disable location sharing
-- Store location using Firestore GeoPoints
-- Retrieve trusted contacts' locations
-- Timestamp every location update
-- Real-time location synchronization
+Implemented functionalities include:
+
+- Trigger SOS session
+- Cancel SOS session
+- End SOS session
+- Acknowledge emergency requests
+- Archive completed SOS sessions
+- Retrieve SOS session details
+- Listen for real-time SOS updates
+- Register responders
+- Update responder locations
+
+Each SOS session stores:
+
+- Triggered user
+- Current status
+- Active escalation layer
+- Alerted contacts
+- Responders
+- Start and end timestamps
+
+Collections used:
+
+```
+sos_sessions
+sos_history
+```
 
 ---
 
-### SOS Emergency System
+## Location Services
 
-The application provides a structured SOS mechanism that allows users to instantly trigger emergency alerts. Each SOS event is managed through dedicated Firestore sessions to ensure reliable communication with trusted contacts.
+Real-time location services allow the application to track trusted users during emergencies.
 
-**Key Features**
-- Create SOS sessions
-- Trigger emergency alerts
-- Track SOS session status
-- Cancel active SOS sessions
-- Resolve completed SOS sessions
-- Maintain alert history
-- Real-time SOS updates using Firestore listeners
+Implemented features:
+
+- Update user location
+- Stop live location sharing
+- Fetch locations of trusted contacts
+- Store GeoPoint coordinates
+- Maintain timestamp of latest update
+- Manage sharing permissions
+
+Firestore collection:
+
+```
+user_locations
+```
 
 ---
 
-### Notification Management
+## Notification Service
 
-TrustNet includes a notification system to keep users informed about trust requests, emergency alerts, and important application events.
+Notification services provide communication between users during emergency situations.
 
-**Key Features**
-- Generate notifications
+Implemented features:
+
+- Send notifications
+- Notify Layer-1 contacts
+- Notify responders
 - Retrieve user notifications
-- Mark notifications as read
-- Store notification history
-- Timestamp every notification
 
-**Supported Notification Types**
-- Trust Requests
-- Trust Request Accepted
-- SOS Alerts
-- General Notifications
+Notification types include:
 
----
+- SOS Alert
+- Emergency Ended
+- Trust Request
+- General Updates
 
-### Firebase Cloud Integration
-
-The project is fully integrated with Firebase services, providing a scalable cloud-based backend for authentication and data storage.
-
-**Firebase Services Used**
-- Firebase Authentication
-- Cloud Firestore
-- Firebase SDK
-- Firestore GeoPoint
-- Server Timestamp
-
----
-
-### Modular Service-Based Architecture
-
-The application follows a modular architecture where each major functionality is implemented as an independent service. This improves maintainability, scalability, and code reusability.
-
-**Implemented Services**
-- Authentication Service
-- Trust Service
-- SOS Service
-- Location Service
-- Notification Service
-
----
-
-### Type-Safe Development
-
-The entire application is developed using TypeScript, ensuring better code quality, improved maintainability, and enhanced developer experience.
-
-**Implemented Models**
-- User
-- Trust Relationship
-- SOS Session
-- User Location
-
----
-
-### Input Validation
-
-The application validates user inputs before interacting with Firebase services, ensuring data consistency and minimizing invalid requests.
-
-**Validation Features**
-- Phone number validation
-- Utility helper functions
-- Centralized application constants
-- SOS status validation
-- Trust request status validation
-
----
-
-## Technology Stack
-
-| Category | Technologies |
-|----------|--------------|
-| Frontend | React.js |
-| Language | TypeScript |
-| Build Tool | Vite |
-| Styling | CSS3 |
-| Authentication | Firebase Authentication |
-| Database | Cloud Firestore |
-| Backend Services | Firebase SDK |
-| Location Services | Firestore GeoPoint |
-| State Management | React Hooks |
-| Package Manager | npm |
-| Linting | ESLint |
-| Version Control | Git |
-
----
-
-## Project Architecture
-
-The application follows a layered architecture that separates presentation, business logic, and data access, resulting in a clean, scalable, and maintainable codebase.
+Firestore collection:
 
 ```
-Presentation Layer
-│
-├── React Components
-│
-Business Logic Layer
-│
-├── Authentication Service
-├── Trust Service
-├── SOS Service
-├── Notification Service
-└── Location Service
-│
-Data Layer
-│
-├── Firebase Authentication
-└── Cloud Firestore
+notifications
 ```
 
 ---
 
-## Project Structure
+## Guardian Rating System
+
+Guardian volunteers can receive community feedback after responding to emergencies.
+
+Implemented features:
+
+- Submit guardian ratings
+- Update average guardian rating
+- Retrieve guardian rating history
+- Calculate overall rating
+
+Stored information includes:
+
+- User ID
+- Guardian ID
+- Rating
+- Comments
+- Timestamp
+
+Firestore collection:
 
 ```
-src/
+ratings
+```
+
+---
+
+## Safe Space Service
+
+The Safe Space module helps users locate verified safe locations nearby.
+
+Implemented functionalities include:
+
+- Retrieve all verified safe spaces
+- Search nearby safe spaces
+- Calculate nearest safe space
+- Estimate distance between user and safe spaces
+
+Firestore collection:
+
+```
+safe_spaces
+```
+
+---
+
+## User Service
+
+Responsible for user profile management.
+
+Implemented functionalities:
+
+- Retrieve user profile
+- Update profile information
+- Update online/offline status
+- Manage verification status
+
+Firestore collection:
+
+```
+users
+```
+
+---
+
+# Project Structure
+
+```
+src
 │
-├── assets/
-│
-├── firebase/
+├── firebase
 │   └── firebase.ts
 │
-├── services/
+├── services
 │   ├── authService.ts
 │   ├── trustService.ts
 │   ├── sosService.ts
+│   ├── locationService.ts
 │   ├── notificationService.ts
-│   └── locationService.ts
+│   ├── userService.ts
+│   ├── ratingService.ts
+│   └── safeSpaceService.ts
 │
-├── types/
+├── types
 │   ├── user.ts
 │   ├── trust.ts
 │   ├── sos.ts
 │   └── location.ts
 │
-├── utils/
-│   ├── constants.ts
-│   ├── helpers.ts
-│   └── validators.ts
-│
-├── App.tsx
-├── main.tsx
-└── testBackend.ts
+└── utils
+    ├── constants.ts
+    ├── helpers.ts
+    └── validators.ts
 ```
 
 ---
 
-## Security Features
+# Firestore Collections
 
-- OTP-based phone authentication
-- Firebase Authentication integration
-- Passwordless login mechanism
-- Verified user accounts
-- Firestore server timestamps
-- Secure trust relationship validation
-- Prevention of duplicate trust requests
-- Persistent authenticated sessions
-- Input validation before database operations
+The backend uses the following Firestore collections:
+
+```
+users
+trust_relationships
+sos_sessions
+sos_history
+user_locations
+notifications
+ratings
+safe_spaces
+```
 
 ---
 
-## Scalability
+# Technologies Used
 
-The modular architecture allows the application to be easily extended with additional features such as:
+- TypeScript
+- Firebase Authentication
+- Firebase Firestore
+- React
+- Vite
 
-- Push notifications
-- AI-powered emergency detection
-- Voice-activated SOS
-- Live map integration
-- Emergency service integration
-- End-to-end encrypted messaging
-- Wearable device support
-- Offline emergency mode
-- Analytics dashboard
-- Multi-language support
-- Administrative dashboard
+---
+
+# Backend Architecture
+
+The backend follows a service-based architecture.
+
+```
+Frontend
+
+      ↓
+
+Service Layer
+
+      ↓
+
+Firebase Authentication
+
+      ↓
+
+Cloud Firestore
+```
+
+Each service is responsible for a single feature area, making the code modular, reusable, and easier to maintain.
+
+---
+
+# Firestore Security
+
+The project includes custom Firestore Security Rules to ensure:
+
+- Users can access only their own profile.
+- Users can update only their own location.
+- Authenticated users can access trust relationships.
+- Authenticated users can interact with SOS sessions.
+- Unauthorized database access is prevented.
+
+---
+
+# Future Improvements
+
+The current implementation establishes the core backend functionality. Future enhancements may include:
+
+- Layer-2 and Layer-3 emergency escalation
+- Push notifications using Firebase Cloud Messaging
+- Background location tracking
+- Offline synchronization
+- Image uploads using Firebase Storage
+- Cloud Functions for automatic emergency escalation
+- Analytics dashboard for emergency response
+
+---
+
+# Backend Responsibilities
+
+This implementation focuses on the backend layer of TrustNet and includes:
+
+- Firebase integration
+- Firestore database operations
+- Authentication services
+- Trust circle management
+- SOS lifecycle management
+- Live location management
+- Notification handling
+- Guardian rating system
+- Safe space management
+- User profile management
+
+The frontend interface consumes these services to provide a complete real-time emergency assistance platform.
