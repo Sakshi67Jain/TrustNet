@@ -1,12 +1,10 @@
 import {
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signOut,
-} from "firebase/auth";
-
-import type {
-  ConfirmationResult,
-  User,
+  updateProfile,
+  onAuthStateChanged,
+  type User,
 } from "firebase/auth";
 
 import {
@@ -18,40 +16,31 @@ import {
 
 import { auth, db } from "../firebase/firebase";
 
-// Stores OTP confirmation session
-let confirmationResult: ConfirmationResult | null = null;
-
 // ======================================
-// Initialize Invisible reCAPTCHA
+// Sign Up
 // ======================================
 
-export const initializeRecaptcha = (containerId: string) => {
-  return new RecaptchaVerifier(auth, containerId, {
-    size: "invisible",
-    callback: () => {
-      console.log("reCAPTCHA verified");
-    },
-  });
-};
-
-// ======================================
-// Send OTP
-// ======================================
-
-export const sendOTP = async (
-  phoneNumber: string,
-  appVerifier: RecaptchaVerifier
+export const signup = async (
+  name: string,
+  email: string,
+  password: string
 ) => {
   try {
-    confirmationResult = await signInWithPhoneNumber(
+    const credential = await createUserWithEmailAndPassword(
       auth,
-      phoneNumber,
-      appVerifier
+      email,
+      password
     );
+
+    await updateProfile(credential.user, {
+      displayName: name,
+    });
+
+    await saveUser(credential.user);
 
     return {
       success: true,
-      message: "OTP sent successfully",
+      user: credential.user,
     };
   } catch (error: any) {
     console.error(error);
@@ -64,22 +53,23 @@ export const sendOTP = async (
 };
 
 // ======================================
-// Verify OTP
+// Login
 // ======================================
 
-export const verifyOTP = async (otp: string) => {
+export const login = async (
+  email: string,
+  password: string
+) => {
   try {
-    if (!confirmationResult) {
-      throw new Error("OTP has not been sent.");
-    }
-
-    const result = await confirmationResult.confirm(otp);
-
-    await saveUser(result.user);
+    const credential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
     return {
       success: true,
-      user: result.user,
+      user: credential.user,
     };
   } catch (error: any) {
     console.error(error);
@@ -96,39 +86,38 @@ export const verifyOTP = async (otp: string) => {
 // ======================================
 
 export const saveUser = async (user: User) => {
-  try {
-    const userRef = doc(db, "users", user.uid);
+  const userRef = doc(db, "users", user.uid);
 
-    const userSnap = await getDoc(userRef);
+  const snap = await getDoc(userRef);
 
-    if (userSnap.exists()) {
-      return;
-    }
+  if (snap.exists()) return;
 
-    await setDoc(userRef, {
-      uid: user.uid,
-      displayName: user.displayName || "",
-      email_id: user.email || "",
-      phone_no: user.phoneNumber || "",
-      profile_photo: user.photoURL || "",
-      verification_status: true,
-      online: true,
-      createdAt: serverTimestamp(),
-    });
-
-    console.log("User profile created.");
-  } catch (error: any) {
-    console.error(error);
-    throw error;
-  }
+  await setDoc(userRef, {
+    uid: user.uid,
+    displayName: user.displayName || "",
+    email_id: user.email || "",
+    phone_no: "",
+    profile_photo: user.photoURL || "",
+    verification_status: true,
+    online: true,
+    createdAt: serverTimestamp(),
+  });
 };
 
 // ======================================
-// Get Current User
+// Current User
 // ======================================
 
-export const getCurrentUser = (): User | null => {
-  return auth.currentUser;
+export const getCurrentUser = () => auth.currentUser;
+
+// ======================================
+// Auth State Listener
+// ======================================
+
+export const authListener = (
+  callback: (user: User | null) => void
+) => {
+  return onAuthStateChanged(auth, callback);
 };
 
 // ======================================
@@ -136,18 +125,5 @@ export const getCurrentUser = (): User | null => {
 // ======================================
 
 export const logout = async () => {
-  try {
-    await signOut(auth);
-
-    return {
-      success: true,
-    };
-  } catch (error: any) {
-    console.error(error);
-
-    return {
-      success: false,
-      message: error.message,
-    };
-  }
+  await signOut(auth);
 };
